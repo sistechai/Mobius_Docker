@@ -1,5 +1,4 @@
 version: '2.1'
-
 services:
  db:
     image: mysql
@@ -14,21 +13,22 @@ services:
     network_mode: "host"
     volumes:
       - ./Mobius/mobius/mobiusdb.sql:/docker-entrypoint-initdb.d/mobiusdb.sql
-    
+
  mobius-server:
-    build:
-      context: .
-    image: "mobius-server:latest"    
+    image: "node:14.15.2"
+    working_dir: "/home/node/app"
     environment:
       - NODE_ENV=production
     volumes:
-      - /home/user/Projects/Mobius_Docker/Mobius:/home/node/app
+      - ./Mobius:/home/node/app
     network_mode: "host"
     expose:
       - "8081"    
+    command:
+      - "npm install"
+      - "node mobius"
     depends_on:
       - db
-    restart: always
 
  mqtt:
     image: eclipse-mosquitto:latest
